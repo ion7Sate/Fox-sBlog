@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import {configDotenv} from "dotenv";
 import userRoutes from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
+import res from "express/lib/response.js";
 
 configDotenv();
 mongoose
@@ -22,4 +23,14 @@ app.listen(3000,()=>{
 });
 
 app.use('/api/user',userRoutes);
-app.use('/api/auth',authRoute)
+app.use('/api/auth',authRoute);
+
+app.use((err, req, res, next)=>{
+    const stausCode = err.statusCode || 500;
+    const message  = err.message || 'Internal Server Error';
+    res.status(stausCode).json({
+        succes : false ,
+            stausCode,
+            message
+    });
+});
